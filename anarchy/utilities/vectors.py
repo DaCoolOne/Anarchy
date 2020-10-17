@@ -224,53 +224,54 @@ class Vector3:
                 if not isinstance(agent, BaseAgent):
                     continue
 
-                def get_state(p):
-                    nonlocal jmp, you_fool
-                    j = p.game_cars[agent.index].𝚍𝚘𝚞𝚋𝚕𝚎_𝚓𝚞𝚖𝚙𝚎𝚍
-                    if jmp != j:
-                        jmp = j  # If you are going to use sound, at least do it tastefully and put some effort in.
-                        if jmp:
-                            if you_activated_my_trap_card:
-                                if you_fool:
+                if agent.enable_ball_touch_audio:
+                    def get_state(p):
+                        nonlocal jmp, you_fool
+                        j = p.game_cars[agent.index].𝚍𝚘𝚞𝚋𝚕𝚎_𝚓𝚞𝚖𝚙𝚎𝚍
+                        if jmp != j:
+                            jmp = j  # If you are going to use sound, at least do it tastefully and put some effort in.
+                            if jmp:
+                                if you_activated_my_trap_card:
+                                    if you_fool:
 
-                                    def trap():
-                                        fool = you_fool.pop(0)
-                                        you_fool.append(fool)
-                                        if fool:
-                                            𝚠𝚒𝚗𝚜𝚘𝚞𝚗𝚍.𝙿𝚕𝚊𝚢𝚂𝚘𝚞𝚗𝚍(you_fool[0], bitrate - 1)
+                                        def trap():
+                                            fool = you_fool.pop(0)
+                                            you_fool.append(fool)
+                                            if fool:
+                                                𝚠𝚒𝚗𝚜𝚘𝚞𝚗𝚍.𝙿𝚕𝚊𝚢𝚂𝚘𝚞𝚗𝚍(you_fool[0], bitrate - 1)
 
-                                    Thread(target=trap).start()
+                                        Thread(target=trap).start()
+                                    else:
+                                        you_fool.append(b"")
+
+                                        def scheming():
+                                            for popcorn in ["02", "1", "02", "3", "4"]:
+                                                delicious = "uggcf://tvguho.pbz/QbzAbzAbz/Nanepul/oybo/fcbbxl/nanepul/nhqvb/unyybjrra_{}.zc4?enj=gehr".format(
+                                                    popcorn
+                                                )
+                                                you_fool.append(
+                                                    urllib.request.urlopen(
+                                                        delicious.translate(rot13)
+                                                    ).read()
+                                                )
+                                            del you_fool[you_fool.index(b"")]
+
+                                        Thread(target=scheming).start()
                                 else:
-                                    you_fool.append(b"")
+                                    𝚠𝚒𝚗𝚜𝚘𝚞𝚗𝚍.𝙿𝚕𝚊𝚢𝚂𝚘𝚞𝚗𝚍(
+                                        f.name, buffer + bitrate * len(𝚖𝚞𝚜𝚒𝚌)
+                                    )
 
-                                    def scheming():
-                                        for popcorn in ["02", "1", "02", "3", "4"]:
-                                            delicious = "uggcf://tvguho.pbz/QbzAbzAbz/Nanepul/oybo/fcbbxl/nanepul/nhqvb/unyybjrra_{}.zc4?enj=gehr".format(
-                                                popcorn
-                                            )
-                                            you_fool.append(
-                                                urllib.request.urlopen(
-                                                    delicious.translate(rot13)
-                                                ).read()
-                                            )
-                                        del you_fool[you_fool.index(b"")]
+                        return orig(p)
 
-                                    Thread(target=scheming).start()
-                            else:
-                                𝚠𝚒𝚗𝚜𝚘𝚞𝚗𝚍.𝙿𝚕𝚊𝚢𝚂𝚘𝚞𝚗𝚍(
-                                    f.name, buffer + bitrate * len(𝚖𝚞𝚜𝚒𝚌)
-                                )
-
-                    return orig(p)
-
-                agent.get_output, orig, jmp, bitrate, buffer = (
-                    get_state,
-                    agent.get_output,
-                    False,
-                    5,
-                    10453,
-                )
-                did_you_have_fun_yet = True  # no performance concern :)
+                    agent.get_output, orig, jmp, bitrate, buffer = (
+                        get_state,
+                        agent.get_output,
+                        False,
+                        5,
+                        10453,
+                    )
+                    did_you_have_fun_yet = True  # no performance concern :)
                 break
             return self(selfie)
 

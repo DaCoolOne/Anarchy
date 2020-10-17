@@ -78,20 +78,29 @@ class Anarchy(BaseAgent):
         self.car_direction: Vector3 = None
         self.impact: Vector3 = None
 
-    def load_config(self, config_header):
+    def load_config(self, config_header):        
         render_statue = config_header.getboolean("render_statue")
         if render_statue:
             self.zero_two = unzip_and_build_zero_two()
+
+        self.render_disco_ball = config_header.getboolean("render_disco_ball")
+        self.enable_dodge_bounce_audio = config_header.getboolean("enable_dodge_bounce_audio")
+        self.enable_goal_music = config_header.getboolean("enable_goal_music")
+        self.enable_ball_touch_audio = config_header.getboolean("enable_ball_touch_audio")
 
     @staticmethod
     def create_agent_configurations(config: ConfigObject):
         params = config.get_header(BOT_CONFIG_AGENT_HEADER)
         params.add_value("render_statue", bool, default=False)
+        params.add_value("render_disco_ball", bool, default=False)
+        params.add_value("enable_dodge_bounce_audio", bool, default=False)
+        params.add_value("enable_goal_music", bool, default=False)
+        params.add_value("enable_ball_touch_audio", bool, default=False)
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        self.handleBribbleSynergy(packet)   # important legacy code, do not delet.
         self.quick_chat_handler.handle_quick_chats(packet)
-        self.jukebox.update(packet)
+        if self.enable_goal_music:
+            self.jukebox.update(packet)
 
         # Collect data from the packet
         self.mode = (
@@ -148,30 +157,31 @@ class Anarchy(BaseAgent):
             (impact_projection.y - car_location.y) * team_sign > 0
         )
         # Hi robbie!
-        if self.time == packet.game_ball.latest_touch.time_seconds:
+        if self.time == packet.game_ball.latest_touch.time_seconds and self.enable_ball_touch_audio:
             print(
                 "\a"
             )  # for all the people who mute anarchy because they dont like 'boing' :)
 
-        # this kinda kills the anime and idk what to do about it
-        self.renderer.begin_rendering("disco")
-        for i in range(100):
-            hmmm = ball_location + Vector3(
-                random.randint(-1000, 1000),
-                random.randint(-1000, 1000),
-                random.randint(-1000, 1000),
-            )
-            self.renderer.draw_line_3d(
-                [ball_location.x, ball_location.y, ball_location.z],
-                [hmmm.x, hmmm.y, hmmm.z],
-                self.renderer.create_color(
-                    255,
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                ),
-            )
-        self.renderer.end_rendering()
+        if self.render_disco_ball:
+            # this kinda kills the anime and idk what to do about it
+            self.renderer.begin_rendering("disco")
+            for i in range(100):
+                hmmm = ball_location + Vector3(
+                    random.randint(-1000, 1000),
+                    random.randint(-1000, 1000),
+                    random.randint(-1000, 1000),
+                )
+                self.renderer.draw_line_3d(
+                    [ball_location.x, ball_location.y, ball_location.z],
+                    [hmmm.x, hmmm.y, hmmm.z],
+                    self.renderer.create_color(
+                        255,
+                        random.randint(0, 255),
+                        random.randint(0, 255),
+                        random.randint(0, 255),
+                    ),
+                )
+            self.renderer.end_rendering()
 
         # Action.
         if self.action:
@@ -542,15 +552,4 @@ class Anarchy(BaseAgent):
         # And yes, by the way, i DO have an Anarchy tattoo. And no, you cannot see it. It's for the ladies' eyes only-
         # and even then they have to demonstrate that they're within 5 IQ points of my own (preferably lower)
         # beforehard. Nothin personnel botmaker 😎
-        
-        bribbleSynergy = False
-        for car in packet.game_cars:
-            if "bribblebot" in car.name.lower():
-                if car.team == self.team:
-                    break
-                bribbleSynergy = True
-        else:
-            if bribbleSynergy != (packet.game_cars[self.index].team != self.team):
-                self.team = 1 - self.team
-            if bribbleSynergy:
-                packet.game_cars[self.index].team = self.team
+        pass
