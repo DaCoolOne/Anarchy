@@ -7,7 +7,7 @@ from pathlib import Path
 from rlbot.utils.structures.game_data_struct import GameTickPacket
 from rlbot.agents.base_agent import BaseAgent
 
-
+# RUSH B
 class Jukebox:
     def __init__(self, agent: BaseAgent, goal_music: bool = True) -> None:
         self.agent: BaseAgent = agent
